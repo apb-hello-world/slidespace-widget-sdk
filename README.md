@@ -29,5 +29,4 @@ See [`examples/hello-clock`](examples/hello-clock) for a working package. The ex
 
 Create a verified A Terrible Day Software account with SlideSpace access, then open [Widget publishing](https://aterrible.day/widgets/submit). Each version goes through automated validation and manual review. Community widgets must be free and may not contain advertising or paid feature unlocks.
 
-Full documentation is available at [aterrible.day/widgets/docs](https://aterrible.day/widgets/docs).
-
+Full documentation is available at [aterrible.day/docs/slidespace/widgets](https://aterrible.day/docs/slidespace/widgets).
