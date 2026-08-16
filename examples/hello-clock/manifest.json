@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "community.hello-clock",
+  "name": "Hello clock",
+  "description": "A small SDK example that formats the host-provided clock.",
+  "publisher": "SDK sample",
+  "version": "0.1.0",
+  "renderer": "declarative-v2",
+  "defaultWidth": 320,
+  "defaultHeight": 150,
+  "refreshIntervalMilliseconds": 1000,
+  "permissions": ["system.clock.read"],
+  "visible": true,
+  "previewText": "12:34",
+  "primaryText": "12:34",
+  "secondaryText": "Local time",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "dataSource": "system.clock",
+  "dataFormat": "h:mm:ss tt",
+  "layout": {
+    "type": "stack",
+    "direction": "vertical",
+    "children": [
+      { "type": "text", "binding": "clock", "fontSize": 30, "weight": "bold" },
+      { "type": "text", "text": "Local time", "fontSize": 12, "color": "#8EBBC3" }
+    ]
+  },
+  "settings": [],
+  "networkHosts": []
+}
+

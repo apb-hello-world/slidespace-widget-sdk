@@ -1,0 +1,29 @@
+{
+  "name": "@slidespace/widget-sdk",
+  "version": "0.1.0",
+  "description": "Schemas and tools for building safe declarative SlideSpace widgets",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "slidespace-widget": "dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": ["dist", "schema", "examples", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "check": "npm run build && npm test"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  }
+}
+
