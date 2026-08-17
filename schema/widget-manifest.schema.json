@@ -91,11 +91,11 @@
         },
         "accentColor": {
           "type": "string",
-          "pattern": "^#[0-9a-fA-F]{6}$"
+          "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
         },
         "backgroundColor": {
           "type": "string",
-          "pattern": "^#[0-9a-fA-F]{6}$"
+          "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
         },
         "transparentBackground": {
           "default": false,
@@ -281,11 +281,11 @@
         },
         "accentColor": {
           "type": "string",
-          "pattern": "^#[0-9a-fA-F]{6}$"
+          "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
         },
         "backgroundColor": {
           "type": "string",
-          "pattern": "^#[0-9a-fA-F]{6}$"
+          "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
         },
         "transparentBackground": {
           "default": false,
@@ -443,7 +443,9 @@
                   "url",
                   "choice",
                   "color",
+                  "font",
                   "volume",
+                  "volumes",
                   "secret"
                 ]
               },
@@ -458,6 +460,15 @@
                   },
                   {
                     "type": "boolean"
+                  },
+                  {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 260
+                    }
                   }
                 ]
               },
@@ -669,6 +680,15 @@
                       "itemsSelector": {
                         "type": "string",
                         "maxLength": 500
+                      },
+                      "maximumItems": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "maximumItemsSetting": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,62}$"
                       }
                     },
                     "required": [
@@ -908,7 +928,7 @@
         },
         "color": {
           "type": "string",
-          "pattern": "^#[0-9a-fA-F]{6}$"
+          "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
         },
         "fontSize": {
           "type": "number",
@@ -1019,6 +1039,9 @@
           "type": "string",
           "pattern": "^[a-z][a-z0-9_]{0,31}$"
         },
+        "scrollable": {
+          "type": "boolean"
+        },
         "condition": {
           "type": "object",
           "properties": {
@@ -1071,16 +1094,41 @@
           "properties": {
             "color": {
               "type": "string",
-              "pattern": "^#[0-9a-fA-F]{6}$"
+              "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
+            },
+            "colorBinding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             "backgroundColor": {
               "type": "string",
-              "pattern": "^#[0-9a-fA-F]{6}$"
+              "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
+            },
+            "backgroundColorBinding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             "fontSize": {
               "type": "number",
               "minimum": 8,
               "maximum": 128
+            },
+            "fontFamily": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "fontSizeBinding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "fontFamilyBinding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             "weight": {
               "type": "string",
@@ -1125,7 +1173,12 @@
             },
             "borderColor": {
               "type": "string",
-              "pattern": "^#[0-9a-fA-F]{6}$"
+              "pattern": "^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
+            },
+            "borderColorBinding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             "borderWidth": {
               "type": "number",

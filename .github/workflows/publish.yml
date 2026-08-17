@@ -1,0 +1,41 @@
+name: Publish Widget SDK
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - run: npm ci
+      - name: Verify tag matches package version
+        shell: bash
+        run: test "v$(node -p \"require('./package.json').version\")" = "$GITHUB_REF_NAME"
+      - name: Build TypeScript WebAssembly example
+        working-directory: examples/typescript-dashboard/source
+        run: npm ci && npm run build
+      - name: Build Rust WebAssembly example
+        working-directory: examples/rust-mini-game/source
+        run: |
+          cargo build --release
+          cp target/wasm32-unknown-unknown/release/slidespace_rust_mini_game.wasm ../logic.wasm
+      - run: npm run check
+        env:
+          REQUIRE_PREBUILT_WASM: "1"
+      - run: npm publish --provenance --access public

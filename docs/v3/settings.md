@@ -1,5 +1,5 @@
 # Settings and protected credentials
 
-Settings support text, URL, number, Boolean, choice, color, volume, and secret fields. Values are stored per widget instance.
+Settings support text, URL, number, Boolean, choice, color, installed-font, single-volume, multi-volume, and secret fields. Values are stored per widget instance. Color fields accept `#RRGGBB` or `#RRGGBBAA` and SlideSpace presents a native color-and-opacity editor. Non-secret values may be used by declarative bindings, including `fontFamilyBinding` and `fontSizeBinding` on text styles. A `volumes` setting opens SlideSpace's native multi-drive selector and stores a bounded array of volume names; an empty array represents all available drives.
 
 Secret settings are encrypted for the current Windows user. Secret values cannot have manifest defaults and are never placed in runtime input, persistent Wasm state, logs, diagnostics, catalog metadata, Studio, or Cloudflare. A secret may be referenced only by a brokered HTTP header or an explicitly marked query value. Query-string secrets should be used only when an API cannot accept a header because URLs are more likely to be logged by remote infrastructure.

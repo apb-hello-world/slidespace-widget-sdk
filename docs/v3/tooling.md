@@ -5,3 +5,7 @@ The CLI supports `init`, `validate`, `simulate`, `inspect`, `test`, `pack`, `pub
 Widgets should refresh only as often as the information requires, preserve useful last-good data, keep bound collections small, and avoid continuous animation when a native transition or periodic update is sufficient. Inactive workspaces and obscured widgets do not receive continuous ticks.
 
 Rust and TypeScript are the supported logic templates at launch. Other Extism-compatible languages are experimental and must still conform to the exact runtime protocol and resource limits.
+
+## Publishing the SDK package
+
+The npm package requires Node.js 22 or newer. Tagged releases run the complete contract and example suite before publishing `@slidespace/widget-sdk` with npm provenance. Repository maintainers configure npm trusted publishing for the GitHub `publish.yml` workflow; local development and widget packaging do not require npm authentication.

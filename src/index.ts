@@ -28,7 +28,8 @@ export const widgetPermissions = [
 
 export const widgetPermissionV3Schema = z.enum(widgetPermissions);
 
-const colorSchema = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const colorSchema = z.string().regex(/^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$/,
+  "Colors use #RRGGBB or #RRGGBBAA notation.");
 const stableSemverSchema = z.string().trim().regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/);
 const bindingSchema = z.string().trim().min(1).max(128);
 const settingKeySchema = z.string().regex(/^[A-Za-z][A-Za-z0-9._-]{0,62}$/);
@@ -42,8 +43,13 @@ export const widgetSettingSchema = z.object({
   key: settingKeySchema,
   label: z.string().trim().min(1).max(80),
   description: z.string().trim().max(240).optional(),
-  type: z.enum(["boolean", "number", "text", "url", "choice", "color", "volume", "secret"]),
-  defaultValue: z.union([z.string().max(2_000), z.number(), z.boolean()]).optional(),
+  type: z.enum(["boolean", "number", "text", "url", "choice", "color", "font", "volume", "volumes", "secret"]),
+  defaultValue: z.union([
+    z.string().max(2_000),
+    z.number(),
+    z.boolean(),
+    z.array(z.string().trim().min(1).max(260)).max(64),
+  ]).optional(),
   minimum: z.number().optional(),
   maximum: z.number().optional(),
   options: z.array(z.object({
@@ -98,8 +104,13 @@ const conditionSchema = z.object({
 
 const styleSchema = z.object({
   color: colorSchema.optional(),
+  colorBinding: bindingSchema.optional(),
   backgroundColor: colorSchema.optional(),
+  backgroundColorBinding: bindingSchema.optional(),
   fontSize: z.number().min(8).max(128).optional(),
+  fontFamily: z.string().trim().min(1).max(120).optional(),
+  fontSizeBinding: bindingSchema.optional(),
+  fontFamilyBinding: bindingSchema.optional(),
   weight: z.enum(["normal", "medium", "bold"]).optional(),
   horizontalAlignment: z.enum(["start", "center", "end", "stretch"]).optional(),
   verticalAlignment: z.enum(["start", "center", "end", "stretch"]).optional(),
@@ -107,6 +118,7 @@ const styleSchema = z.object({
   gap: z.number().min(0).max(96).optional(),
   cornerRadius: z.number().min(0).max(96).optional(),
   borderColor: colorSchema.optional(),
+  borderColorBinding: bindingSchema.optional(),
   borderWidth: z.number().min(0).max(8).optional(),
   opacity: z.number().min(0).max(1).optional(),
 }).strict();
@@ -124,6 +136,7 @@ export type WidgetLayoutNode = {
   columns?: number;
   itemsBinding?: string;
   itemName?: string;
+  scrollable?: boolean;
   condition?: z.infer<typeof conditionSchema>;
   chartKind?: "line" | "bar" | "area";
   style?: z.infer<typeof styleSchema>;
@@ -144,6 +157,7 @@ export const widgetLayoutNodeSchema: z.ZodType<WidgetLayoutNode> = z.lazy(() => 
   columns: z.number().int().min(1).max(12).optional(),
   itemsBinding: bindingSchema.optional(),
   itemName: z.string().regex(/^[a-z][a-z0-9_]{0,31}$/).optional(),
+  scrollable: z.boolean().optional(),
   condition: conditionSchema.optional(),
   chartKind: z.enum(["line", "bar", "area"]).optional(),
   style: styleSchema.optional(),
@@ -185,6 +199,8 @@ const httpDataSourceSchema = z.object({
     format: z.enum(["json", "xml", "text"]),
     selector: z.string().max(500).optional(),
     itemsSelector: z.string().max(500).optional(),
+    maximumItems: z.number().int().min(1).max(100).optional(),
+    maximumItemsSetting: settingKeySchema.optional(),
   }),
   refreshIntervalMilliseconds: z.number().int().min(60_000).max(86_400_000),
   manualRefresh: z.boolean().default(true),
@@ -345,13 +361,30 @@ export const widgetManifestV3Schema = z.object({
     context.addIssue({ code: "custom", path: ["source"], message: "Community WebAssembly widgets require public source metadata." });
   const settingKeys = new Set(manifest.settings.map((setting) => setting.key));
   for (const source of manifest.dataSources) {
-    if (source.type !== "http") continue;
-    const secretReferences = [...Object.values(source.request.headers), ...Object.values(source.request.query)]
-      .filter((value): value is { secretSetting: string } => typeof value === "object" && value !== null && "secretSetting" in value);
-    for (const reference of secretReferences) {
-      const setting = manifest.settings.find((candidate) => candidate.key === reference.secretSetting);
-      if (!settingKeys.has(reference.secretSetting) || setting?.type !== "secret")
-        context.addIssue({ code: "custom", path: ["dataSources", source.id], message: `Secret reference ${reference.secretSetting} must name a secret setting.` });
+    if (source.type === "http") {
+      const secretReferences = [...Object.values(source.request.headers), ...Object.values(source.request.query)]
+        .filter((value): value is { secretSetting: string } => typeof value === "object" && value !== null && "secretSetting" in value);
+      for (const reference of secretReferences) {
+        const setting = manifest.settings.find((candidate) => candidate.key === reference.secretSetting);
+        if (!settingKeys.has(reference.secretSetting) || setting?.type !== "secret")
+          context.addIssue({ code: "custom", path: ["dataSources", source.id], message: `Secret reference ${reference.secretSetting} must name a secret setting.` });
+      }
+      if (source.response.maximumItemsSetting) {
+        const setting = manifest.settings.find((candidate) => candidate.key === source.response.maximumItemsSetting);
+        if (setting?.type !== "number")
+          context.addIssue({ code: "custom", path: ["dataSources", source.id, "response", "maximumItemsSetting"], message: "maximumItemsSetting must name a number setting." });
+      }
+    }
+    if (source.type === "system.storage") {
+      const volumeSetting = typeof source.options.volumeSetting === "string" ? source.options.volumeSetting : undefined;
+      const volumesSetting = typeof source.options.volumesSetting === "string" ? source.options.volumesSetting : undefined;
+      const showAllSetting = typeof source.options.showAllSetting === "string" ? source.options.showAllSetting : undefined;
+      if (volumeSetting && manifest.settings.find((candidate) => candidate.key === volumeSetting)?.type !== "volume")
+        context.addIssue({ code: "custom", path: ["dataSources", source.id, "options", "volumeSetting"], message: "volumeSetting must name a volume setting." });
+      if (volumesSetting && manifest.settings.find((candidate) => candidate.key === volumesSetting)?.type !== "volumes")
+        context.addIssue({ code: "custom", path: ["dataSources", source.id, "options", "volumesSetting"], message: "volumesSetting must name a volumes setting." });
+      if (showAllSetting && manifest.settings.find((candidate) => candidate.key === showAllSetting)?.type !== "boolean")
+        context.addIssue({ code: "custom", path: ["dataSources", source.id, "options", "showAllSetting"], message: "showAllSetting must name a Boolean setting." });
     }
   }
   for (const setting of manifest.settings) {

@@ -4,10 +4,10 @@
   "name": "RSS reader",
   "description": "Read any approved RSS or Atom feed.",
   "publisher": "SlideSpace SDK samples",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "renderer": "declarative-v3",
   "defaultWidth": 420,
-  "defaultHeight": 420,
+  "defaultHeight": 480,
   "permissions": ["network.https", "links.open"],
   "visible": true,
   "previewText": "RSS",
@@ -18,12 +18,74 @@
   "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
   "settings": [
     {
+      "key": "heading",
+      "label": "Heading",
+      "description": "The title shown above the feed.",
+      "type": "text",
+      "defaultValue": "Latest stories"
+    },
+    {
       "key": "feedUrl",
       "label": "Feed URL",
       "description": "The RSS or Atom feed to display.",
       "type": "url",
       "required": true,
       "approvesNetworkOrigin": true
+    },
+    {
+      "key": "itemCount",
+      "label": "Stories to show",
+      "description": "Choose how many recent feed entries appear.",
+      "type": "number",
+      "defaultValue": 8,
+      "minimum": 3,
+      "maximum": 20
+    },
+    {
+      "key": "fontFamily",
+      "label": "Story font",
+      "description": "Choose an installed font for feed titles and dates.",
+      "type": "font",
+      "defaultValue": "Segoe UI Variable Text"
+    },
+    {
+      "key": "fontSize",
+      "label": "Story text size",
+      "description": "Adjust the feed title size without changing the widget itself.",
+      "type": "number",
+      "defaultValue": 12,
+      "minimum": 10,
+      "maximum": 18
+    },
+    {
+      "key": "showDates",
+      "label": "Show published dates",
+      "type": "boolean",
+      "defaultValue": true
+    },
+    {
+      "key": "rowBackground",
+      "label": "Row background",
+      "type": "color",
+      "defaultValue": "#112329"
+    },
+    {
+      "key": "rowBorder",
+      "label": "Row border",
+      "type": "color",
+      "defaultValue": "#24505A"
+    },
+    {
+      "key": "storyColor",
+      "label": "Story text",
+      "type": "color",
+      "defaultValue": "#FFFFFF"
+    },
+    {
+      "key": "dateColor",
+      "label": "Date text",
+      "type": "color",
+      "defaultValue": "#8EBBC3"
     }
   ],
   "network": {
@@ -43,7 +105,8 @@
       },
       "response": {
         "format": "xml",
-        "itemsSelector": "/rss/channel/item | /feed/entry"
+        "itemsSelector": "/rss/channel/item | /feed/entry",
+        "maximumItemsSetting": "itemCount"
       },
       "refreshIntervalMilliseconds": 300000,
       "manualRefresh": true
@@ -56,19 +119,66 @@
   "layout": {
     "type": "stack",
     "direction": "vertical",
-    "style": { "padding": 18, "gap": 10 },
+    "style": { "padding": 16, "gap": 8 },
     "children": [
-      { "type": "text", "text": "Latest stories", "style": { "fontSize": 22, "weight": "bold" } },
+      {
+        "type": "stack",
+        "direction": "horizontal",
+        "style": { "gap": 8 },
+        "children": [
+          { "type": "text", "binding": "settings.heading", "style": { "fontSize": 20, "weight": "bold" } },
+          { "type": "spacer" },
+          { "type": "button", "text": "Refresh", "action": "refreshFeed", "style": { "padding": 4, "cornerRadius": 6, "fontSize": 10 } }
+        ]
+      },
       {
         "type": "repeat",
         "itemsBinding": "feed.items",
         "itemName": "item",
+        "scrollable": true,
+        "style": { "gap": 4 },
         "template": {
           "type": "button",
           "action": "openArticle",
-          "style": { "padding": 8, "cornerRadius": 8 },
+          "style": {
+            "padding": 4,
+            "cornerRadius": 6,
+            "backgroundColor": "#112329",
+            "backgroundColorBinding": "settings.rowBackground",
+            "borderColor": "#24505A",
+            "borderColorBinding": "settings.rowBorder",
+            "borderWidth": 1
+          },
           "children": [
-            { "type": "text", "binding": "item.title", "style": { "fontSize": 14, "weight": "medium" } }
+            {
+              "type": "stack",
+              "direction": "vertical",
+              "style": { "gap": 1 },
+              "children": [
+                {
+                  "type": "text",
+                  "binding": "item.title",
+                  "style": {
+                    "fontSize": 12,
+                    "fontFamilyBinding": "settings.fontFamily",
+                    "fontSizeBinding": "settings.fontSize",
+                    "colorBinding": "settings.storyColor",
+                    "weight": "medium"
+                  }
+                },
+                {
+                  "type": "text",
+                  "binding": "item.publishedDate",
+                  "condition": { "binding": "settings.showDates", "operator": "truthy" },
+                  "style": {
+                    "fontSize": 9,
+                    "fontFamilyBinding": "settings.fontFamily",
+                    "color": "#8EBBC3",
+                    "colorBinding": "settings.dateColor"
+                  }
+                }
+              ]
+            }
           ]
         }
       }

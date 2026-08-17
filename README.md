@@ -56,4 +56,6 @@ See [Security and permissions](docs/v3/security-and-permissions.md) and [WebAsse
 
 Create a verified A Terrible Day Software account, then open [Widget publishing](https://aterrible.day/widgets/submit). Each release goes through automated validation and staff review. Wasm packages require public source metadata pinned to a commit.
 
+The SDK itself is published from signed version tags through GitHub Actions and npm trusted publishing. Installing dependencies, validating examples, and creating `.sswidget` packages work without an npm account; npm authentication is needed only by maintainers configuring or manually publishing the `@slidespace` package scope.
+
 Branded documentation is available at [aterrible.day/docs/slidespace/widgets](https://aterrible.day/docs/slidespace/widgets) and is rendered from this repository's versioned documentation.

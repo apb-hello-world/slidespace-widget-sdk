@@ -32,6 +32,9 @@ describe("widget manifest", () => {
   it("retains v2 compatibility", () => expect(validateManifest(v2Sample).schemaVersion).toBe(2));
   it("rejects executable renderers", () => expect(() => validateManifest({ ...v2Sample, renderer: "javascript" })).toThrow());
   it("requires the v2 clock permission", () => expect(() => validateManifest({ ...v2Sample, permissions: [] })).toThrow());
+  it("accepts CSS-style alpha colors", () => {
+    expect(validateManifest({ ...v2Sample, backgroundColor: "#0D151880" }).backgroundColor).toBe("#0D151880");
+  });
 
   it.each(["hello-clock", "layout-showcase"])("validates the v2 %s example", async (name) => {
     expect(validateManifest(await example(name)).schemaVersion).toBe(2);
@@ -62,6 +65,16 @@ describe("widget manifest", () => {
     const manifest = await example("authenticated-api");
     manifest.dataSources[0].request.headers.Authorization = { secretSetting: "missing" };
     expect(() => validateManifest(manifest)).toThrow(/secret setting/);
+  });
+
+  it("requires collection and storage option settings to use the right types", async () => {
+    const rss = await example("rss-reader");
+    rss.dataSources[0].response.maximumItemsSetting = "heading";
+    expect(() => validateManifest(rss)).toThrow(/number setting/);
+
+    const storage = await example("drive-capacity");
+    storage.settings[0].type = "volume";
+    expect(() => validateManifest(storage)).toThrow(/volumes setting/);
   });
 
   it("requires source provenance for Wasm widgets", async () => {

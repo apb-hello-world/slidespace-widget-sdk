@@ -3,6 +3,21 @@
   "version": "0.2.0-beta.1",
   "description": "Schemas, tools, examples, and documentation for building SlideSpace widgets",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apb-hello-world/slidespace-widget-sdk.git"
+  },
+  "homepage": "https://aterrible.day/docs/slidespace/widgets",
+  "bugs": {
+    "url": "https://github.com/apb-hello-world/slidespace-widget-sdk/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "bin": {
     "slidespace-widget": "dist/cli.js"
@@ -18,7 +33,8 @@
     "schemas": "node dist/cli.js schemas schema",
     "test": "vitest run",
     "check:examples": "node scripts/check-examples.mjs",
-    "check": "npm run build && npm run schemas && npm test && npm run check:examples"
+    "check": "npm run build && npm run schemas && npm test && npm run check:examples",
+    "prepublishOnly": "npm run check"
   },
   "dependencies": {
     "fflate": "^0.8.2",

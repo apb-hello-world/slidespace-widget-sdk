@@ -2,12 +2,12 @@
   "schemaVersion": 3,
   "id": "community.sdk-samples.drive-capacity",
   "name": "Drive capacity",
-  "description": "Display free space for a selected local volume.",
+  "description": "Monitor one drive or every available local volume.",
   "publisher": "SlideSpace SDK samples",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "renderer": "declarative-v3",
   "defaultWidth": 340,
-  "defaultHeight": 170,
+  "defaultHeight": 360,
   "permissions": ["system.storage.read"],
   "visible": true,
   "previewText": "72%",
@@ -17,7 +17,43 @@
   "runtime": { "kind": "declarative" },
   "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
   "settings": [
-    { "key": "volume", "label": "Volume", "type": "volume", "required": true }
+    {
+      "key": "volumes",
+      "label": "Drives",
+      "description": "Monitor every available drive or choose several specific drives.",
+      "type": "volumes",
+      "defaultValue": []
+    },
+    {
+      "key": "cardBackground",
+      "label": "Card background",
+      "type": "color",
+      "defaultValue": "#122329"
+    },
+    {
+      "key": "cardBorder",
+      "label": "Card border",
+      "type": "color",
+      "defaultValue": "#28434A"
+    },
+    {
+      "key": "driveColor",
+      "label": "Drive label",
+      "type": "color",
+      "defaultValue": "#FFFFFF"
+    },
+    {
+      "key": "capacityColor",
+      "label": "Capacity text",
+      "type": "color",
+      "defaultValue": "#8EBBC3"
+    },
+    {
+      "key": "barColor",
+      "label": "Usage bar",
+      "type": "color",
+      "defaultValue": "#00D9ED"
+    }
   ],
   "network": { "declaredHosts": [], "allowUserProvidedOrigins": false, "allowLocalOrigins": false },
   "dataSources": [
@@ -25,18 +61,43 @@
       "id": "storage",
       "type": "system.storage",
       "refreshIntervalMilliseconds": 60000,
-      "options": { "volumeSetting": "volume" }
+      "options": {
+        "volumesSetting": "volumes"
+      }
     }
   ],
   "actions": [],
   "layout": {
     "type": "stack",
     "direction": "vertical",
-    "style": { "padding": 18, "gap": 8 },
+    "style": { "padding": 16, "gap": 10 },
     "children": [
-      { "type": "text", "binding": "storage.label", "style": { "fontSize": 13, "color": "#8EBBC3" } },
-      { "type": "text", "binding": "storage.freeText", "style": { "fontSize": 26, "weight": "bold" } },
-      { "type": "progress", "binding": "storage.freeRatio" }
+      { "type": "text", "text": "Storage", "style": { "fontSize": 20, "weight": "bold" } },
+      {
+        "type": "repeat",
+        "itemsBinding": "storage.items",
+        "itemName": "drive",
+        "style": { "gap": 8 },
+        "template": {
+          "type": "stack",
+          "direction": "vertical",
+          "style": {
+            "padding": 6,
+            "gap": 2,
+            "cornerRadius": 8,
+            "backgroundColor": "#122329",
+            "backgroundColorBinding": "settings.cardBackground",
+            "borderColor": "#28434A",
+            "borderColorBinding": "settings.cardBorder",
+            "borderWidth": 1
+          },
+          "children": [
+            { "type": "text", "binding": "drive.label", "style": { "fontSize": 12, "weight": "bold", "colorBinding": "settings.driveColor" } },
+            { "type": "text", "binding": "drive.capacityText", "style": { "fontSize": 10, "color": "#8EBBC3", "colorBinding": "settings.capacityColor" } },
+            { "type": "progress", "binding": "drive.usedRatio", "style": { "colorBinding": "settings.barColor" } }
+          ]
+        }
+      }
     ]
   }
 }
