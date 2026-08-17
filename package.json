@@ -27,7 +27,27 @@
     "./schema/*": "./schema/*",
     "./docs/*": "./docs/*"
   },
-  "files": ["dist", "schema", "docs", "examples", "README.md", "LICENSE"],
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/cli.js",
+    "dist/cli.d.ts",
+    "schema",
+    "docs",
+    "examples/*/manifest.json",
+    "examples/*/README.md",
+    "examples/*/logic.wasm",
+    "examples/rust-mini-game/source/Cargo.toml",
+    "examples/rust-mini-game/source/Cargo.lock",
+    "examples/rust-mini-game/source/README.md",
+    "examples/rust-mini-game/source/src",
+    "examples/typescript-dashboard/source/package.json",
+    "examples/typescript-dashboard/source/package-lock.json",
+    "examples/typescript-dashboard/source/README.md",
+    "examples/typescript-dashboard/source/src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "schemas": "node dist/cli.js schemas schema",

@@ -1,0 +1,5 @@
+**/node_modules/
+**/target/
+**/*.sswidget
+**/.DS_Store
+dist/**/*.test.*
