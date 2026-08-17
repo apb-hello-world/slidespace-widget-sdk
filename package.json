@@ -1,6 +1,6 @@
 {
   "name": "@slidespace/widget-sdk",
-  "version": "0.2.0-beta.2",
+  "version": "0.2.0-beta.3",
   "description": "Schemas, tools, examples, and documentation for building SlideSpace widgets",
   "license": "MIT",
   "repository": {

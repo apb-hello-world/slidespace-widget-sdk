@@ -26,7 +26,9 @@ jobs:
       - run: npm ci
       - name: Verify tag matches package version
         shell: bash
-        run: test "v$(node -p \"require('./package.json').version\")" = "$GITHUB_REF_NAME"
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          test "$version" = "$GITHUB_REF_NAME"
       - name: Build TypeScript WebAssembly example
         working-directory: examples/typescript-dashboard/source
         run: npm ci && npm run build
