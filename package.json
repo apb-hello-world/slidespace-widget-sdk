@@ -1,7 +1,7 @@
 {
   "name": "@slidespace/widget-sdk",
   "version": "0.1.0",
-  "description": "Schemas and tools for building safe declarative SlideSpace widgets",
+  "description": "Schemas, tools, examples, and documentation for building SlideSpace widgets",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -26,4 +26,3 @@
     "vitest": "^4.0.17"
   }
 }
-

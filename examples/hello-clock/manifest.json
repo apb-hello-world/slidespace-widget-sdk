@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "id": "community.hello-clock",
+  "id": "community.sdk-samples.hello-clock",
   "name": "Hello clock",
   "description": "A small SDK example that formats the host-provided clock.",
   "publisher": "SDK sample",
@@ -30,4 +30,3 @@
   "settings": [],
   "networkHosts": []
 }
-

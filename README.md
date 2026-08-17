@@ -1,6 +1,8 @@
 # SlideSpace Widget SDK
 
-Build small, safe widgets for the SlideSpace managed desktop. Widgets are declarative packages: they contain JSON and optional raster assets, never native code or JavaScript.
+Build small, safe widgets for the SlideSpace managed desktop. The SDK provides the manifest schema, validation, packaging tools, examples, and publishing guidance.
+
+SlideSpace widgets are not miniature web pages. The current runtime does not execute HTML, JavaScript, native code, or arbitrary API requests. SlideSpace renders a reviewed JSON layout and supplies approved host data, keeping widgets lightweight and permission-scoped.
 
 ## Quick start
 
@@ -18,12 +20,38 @@ Enable **Developer mode** in SlideSpace's Widget extensions screen to install an
 
 - `manifest.json` uses schema 2 and the `declarative-v2` renderer.
 - Layout primitives are `stack`, `text`, `progress`, and `spacer`.
-- Bindings contain host-provided values; a widget cannot execute arbitrary code.
-- Typed settings support boolean, number, text, choice, color, and secret fields.
-- Network access is opt-in, HTTPS-only, and restricted to declared hosts.
+- Bindings contain host-provided values such as `primary`, `secondary`, and `clock`.
+- The available data sources are `static` and `system.clock`.
 - Packages may include PNG, JPEG, and WebP assets under `assets/`.
+- Network permission and host declarations are reserved for future host-provided data sources. The current runtime does not expose `fetch` or direct API access.
 
-See [`examples/hello-clock`](examples/hello-clock) for a working package. The example is intentionally an SDK sample, not a catalog widget; SlideSpace already includes its own full Clock widget.
+## Examples
+
+- [`hello-clock`](examples/hello-clock) formats live host-provided clock data.
+- [`layout-showcase`](examples/layout-showcase) demonstrates nested horizontal and vertical stacks, bound and literal text, spacing, a progress indicator, transparency, and a more involved card layout.
+
+These are SDK samples rather than catalog widgets. SlideSpace already includes its own Clock, System Performance, and Now Playing widgets.
+
+Validate and package either example with the same CLI used for your own widget:
+
+```powershell
+node dist/cli.js validate examples/layout-showcase
+node dist/cli.js pack examples/layout-showcase
+```
+
+## Current runtime boundary
+
+| Capability | Available now |
+| --- | --- |
+| JSON layouts with stacks, text, progress, and spacers | Yes |
+| Static values and host-provided clock data | Yes |
+| Transparent widget backgrounds | Yes |
+| Raster files packaged under `assets/` | Yes |
+| HTML or CSS rendering | No |
+| JavaScript execution | No |
+| Direct HTTP requests or arbitrary API calls | No |
+
+As SlideSpace adds reviewed host APIs, new SDK versions will document the corresponding data sources, bindings, permissions, and examples.
 
 ## Publishing
 

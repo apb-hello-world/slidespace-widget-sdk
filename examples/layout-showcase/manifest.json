@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "id": "community.sdk-samples.layout-showcase",
+  "name": "Layout showcase",
+  "description": "An advanced static layout demonstrating the current declarative renderer.",
+  "publisher": "SDK sample",
+  "version": "0.1.0",
+  "renderer": "declarative-v2",
+  "defaultWidth": 440,
+  "defaultHeight": 220,
+  "refreshIntervalMilliseconds": 5000,
+  "permissions": [],
+  "visible": true,
+  "previewText": "72%",
+  "primaryText": "Launch readiness",
+  "secondaryText": "Three systems nominal",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": true,
+  "dataSource": "static",
+  "dataFormat": null,
+  "layout": {
+    "type": "stack",
+    "direction": "vertical",
+    "children": [
+      {
+        "type": "stack",
+        "direction": "horizontal",
+        "children": [
+          { "type": "text", "binding": "primary", "fontSize": 24, "weight": "bold" },
+          { "type": "text", "text": "READY", "fontSize": 12, "weight": "bold", "color": "#78E6B0" }
+        ]
+      },
+      { "type": "text", "binding": "secondary", "fontSize": 13, "color": "#8EBBC3" },
+      { "type": "progress", "value": 0.72, "color": "#00D9ED" },
+      {
+        "type": "stack",
+        "direction": "horizontal",
+        "children": [
+          { "type": "text", "text": "SYNC  READY", "fontSize": 11, "color": "#78E6B0" },
+          { "type": "spacer" },
+          { "type": "text", "text": "QUEUE  03", "fontSize": 11, "color": "#F2C76E" }
+        ]
+      }
+    ]
+  },
+  "settings": [],
+  "networkHosts": []
+}

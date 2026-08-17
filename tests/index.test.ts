@@ -1,8 +1,9 @@
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { validateManifest } from "../src/index.js";
 
 const sample = {
-  schemaVersion: 2 as const, id: "community.hello-clock", name: "Hello clock",
+  schemaVersion: 2 as const, id: "community.sdk-samples.hello-clock", name: "Hello clock",
   description: "SDK sample", publisher: "SDK sample", version: "0.1.0",
   renderer: "declarative-v2" as const, defaultWidth: 320, defaultHeight: 150,
   refreshIntervalMilliseconds: 1000, permissions: ["system.clock.read"], visible: true,
@@ -17,4 +18,11 @@ describe("widget manifest", () => {
   it("accepts the sample", () => expect(validateManifest(sample).schemaVersion).toBe(2));
   it("rejects executable renderers", () => expect(() => validateManifest({ ...sample, renderer: "javascript" })).toThrow());
   it("requires clock permission", () => expect(() => validateManifest({ ...sample, permissions: [] })).toThrow());
+  it.each(["hello-clock", "layout-showcase"])("validates the %s example", async (name) => {
+    const manifest = JSON.parse(await readFile(
+      new URL(`../examples/${name}/manifest.json`, import.meta.url),
+      "utf8",
+    ));
+    expect(validateManifest(manifest).id).toMatch(/^community\.sdk-samples\./);
+  });
 });
