@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 3,
+  "id": "community.sdk-samples.drive-capacity",
+  "name": "Drive capacity",
+  "description": "Display free space for a selected local volume.",
+  "publisher": "SlideSpace SDK samples",
+  "version": "0.1.0",
+  "renderer": "declarative-v3",
+  "defaultWidth": 340,
+  "defaultHeight": 170,
+  "permissions": ["system.storage.read"],
+  "visible": true,
+  "previewText": "72%",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "runtime": { "kind": "declarative" },
+  "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
+  "settings": [
+    { "key": "volume", "label": "Volume", "type": "volume", "required": true }
+  ],
+  "network": { "declaredHosts": [], "allowUserProvidedOrigins": false, "allowLocalOrigins": false },
+  "dataSources": [
+    {
+      "id": "storage",
+      "type": "system.storage",
+      "refreshIntervalMilliseconds": 60000,
+      "options": { "volumeSetting": "volume" }
+    }
+  ],
+  "actions": [],
+  "layout": {
+    "type": "stack",
+    "direction": "vertical",
+    "style": { "padding": 18, "gap": 8 },
+    "children": [
+      { "type": "text", "binding": "storage.label", "style": { "fontSize": 13, "color": "#8EBBC3" } },
+      { "type": "text", "binding": "storage.freeText", "style": { "fontSize": 26, "weight": "bold" } },
+      { "type": "progress", "binding": "storage.freeRatio" }
+    ]
+  }
+}

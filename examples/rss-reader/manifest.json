@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 3,
+  "id": "community.sdk-samples.rss-reader",
+  "name": "RSS reader",
+  "description": "Read any approved RSS or Atom feed.",
+  "publisher": "SlideSpace SDK samples",
+  "version": "0.1.0",
+  "renderer": "declarative-v3",
+  "defaultWidth": 420,
+  "defaultHeight": 420,
+  "permissions": ["network.https", "links.open"],
+  "visible": true,
+  "previewText": "RSS",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "runtime": { "kind": "declarative" },
+  "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
+  "settings": [
+    {
+      "key": "feedUrl",
+      "label": "Feed URL",
+      "description": "The RSS or Atom feed to display.",
+      "type": "url",
+      "required": true,
+      "approvesNetworkOrigin": true
+    }
+  ],
+  "network": {
+    "declaredHosts": [],
+    "allowUserProvidedOrigins": true,
+    "allowLocalOrigins": false
+  },
+  "dataSources": [
+    {
+      "id": "feed",
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "url": "{{settings.feedUrl}}",
+        "headers": { "Accept": "application/rss+xml, application/atom+xml, application/xml" },
+        "query": {}
+      },
+      "response": {
+        "format": "xml",
+        "itemsSelector": "/rss/channel/item | /feed/entry"
+      },
+      "refreshIntervalMilliseconds": 300000,
+      "manualRefresh": true
+    }
+  ],
+  "actions": [
+    { "id": "openArticle", "type": "openLink", "urlBinding": "item.link" },
+    { "id": "refreshFeed", "type": "refresh", "dataSource": "feed" }
+  ],
+  "layout": {
+    "type": "stack",
+    "direction": "vertical",
+    "style": { "padding": 18, "gap": 10 },
+    "children": [
+      { "type": "text", "text": "Latest stories", "style": { "fontSize": 22, "weight": "bold" } },
+      {
+        "type": "repeat",
+        "itemsBinding": "feed.items",
+        "itemName": "item",
+        "template": {
+          "type": "button",
+          "action": "openArticle",
+          "style": { "padding": 8, "cornerRadius": 8 },
+          "children": [
+            { "type": "text", "binding": "item.title", "style": { "fontSize": 14, "weight": "medium" } }
+          ]
+        }
+      }
+    ]
+  }
+}

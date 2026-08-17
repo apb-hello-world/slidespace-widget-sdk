@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 3,
+  "id": "community.sdk-samples.rust-mini-game",
+  "name": "Rust mini game",
+  "description": "A stateful animation sample driven by sandboxed Rust WebAssembly logic.",
+  "publisher": "SlideSpace SDK samples",
+  "version": "0.1.0",
+  "renderer": "declarative-v3",
+  "defaultWidth": 420,
+  "defaultHeight": 260,
+  "permissions": ["storage.local", "animation.continuous"],
+  "visible": true,
+  "previewText": "GAME",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "runtime": {
+    "kind": "wasm",
+    "apiVersion": "3.0",
+    "module": "logic.wasm",
+    "exports": {
+      "initialize": "initialize",
+      "handleEvent": "handle_event",
+      "migrateState": "migrate_state"
+    },
+    "maximumStateBytes": 262144
+  },
+  "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
+  "source": {
+    "repository": "https://github.com/aterribleday/slidespace-widget-sdk",
+    "commit": "0000000000000000000000000000000000000000",
+    "license": "MIT",
+    "buildInstructions": "Build examples/rust-mini-game/source with the documented Rust template and copy the component to logic.wasm."
+  },
+  "settings": [],
+  "network": { "declaredHosts": [], "allowUserProvidedOrigins": false, "allowLocalOrigins": false },
+  "dataSources": [],
+  "actions": [
+    { "id": "move", "type": "select", "valueBinding": "event.position" }
+  ],
+  "layout": {
+    "type": "overlay",
+    "style": { "padding": 16 },
+    "children": [
+      { "type": "chart", "binding": "trail", "chartKind": "line", "style": { "color": "#00D9ED" } },
+      { "type": "button", "action": "move", "text": "Move", "style": { "horizontalAlignment": "stretch", "verticalAlignment": "stretch", "opacity": 0 } },
+      { "type": "text", "binding": "score", "style": { "fontSize": 18, "weight": "bold", "horizontalAlignment": "end", "verticalAlignment": "start" } }
+    ]
+  }
+}

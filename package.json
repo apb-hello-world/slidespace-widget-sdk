@@ -1,6 +1,6 @@
 {
   "name": "@slidespace/widget-sdk",
-  "version": "0.1.0",
+  "version": "0.2.0-beta.1",
   "description": "Schemas, tools, examples, and documentation for building SlideSpace widgets",
   "license": "MIT",
   "type": "module",
@@ -8,13 +8,17 @@
     "slidespace-widget": "dist/cli.js"
   },
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./schema/*": "./schema/*",
+    "./docs/*": "./docs/*"
   },
-  "files": ["dist", "schema", "examples", "README.md", "LICENSE"],
+  "files": ["dist", "schema", "docs", "examples", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "schemas": "node dist/cli.js schemas schema",
     "test": "vitest run",
-    "check": "npm run build && npm test"
+    "check:examples": "node scripts/check-examples.mjs",
+    "check": "npm run build && npm run schemas && npm test && npm run check:examples"
   },
   "dependencies": {
     "fflate": "^0.8.2",

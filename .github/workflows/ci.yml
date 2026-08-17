@@ -1,0 +1,30 @@
+name: Widget SDK CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  contracts-and-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - run: npm ci
+      - name: Build TypeScript-family WebAssembly example
+        working-directory: examples/typescript-dashboard/source
+        run: npm ci && npm run build
+      - name: Build Rust WebAssembly example
+        working-directory: examples/rust-mini-game/source
+        run: |
+          cargo build --release
+          cp target/wasm32-unknown-unknown/release/slidespace_rust_mini_game.wasm ../logic.wasm
+      - run: npm run check
+        env:
+          REQUIRE_PREBUILT_WASM: "1"

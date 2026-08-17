@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 3,
+  "id": "community.sdk-samples.media-controls",
+  "name": "Media controls",
+  "description": "Show the active Windows media session and approved playback controls.",
+  "publisher": "SlideSpace SDK samples",
+  "version": "0.1.0",
+  "renderer": "declarative-v3",
+  "defaultWidth": 430,
+  "defaultHeight": 190,
+  "permissions": ["system.media.read", "system.media.control"],
+  "visible": true,
+  "previewText": "PLAY",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "runtime": { "kind": "declarative" },
+  "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
+  "settings": [],
+  "network": { "declaredHosts": [], "allowUserProvidedOrigins": false, "allowLocalOrigins": false },
+  "dataSources": [
+    { "id": "media", "type": "system.media", "refreshIntervalMilliseconds": 1000, "options": {} }
+  ],
+  "actions": [
+    { "id": "previous", "type": "mediaControl", "command": "previous" },
+    { "id": "playPause", "type": "mediaControl", "command": "playPause" },
+    { "id": "next", "type": "mediaControl", "command": "next" }
+  ],
+  "layout": {
+    "type": "grid",
+    "columns": 2,
+    "style": { "padding": 14, "gap": 14 },
+    "children": [
+      { "type": "image", "sourceBinding": "media.artwork", "altBinding": "media.title", "style": { "cornerRadius": 10 } },
+      {
+        "type": "stack",
+        "direction": "vertical",
+        "style": { "gap": 6 },
+        "children": [
+          { "type": "text", "binding": "media.title", "style": { "fontSize": 18, "weight": "bold" } },
+          { "type": "text", "binding": "media.artist", "style": { "fontSize": 12, "color": "#8EBBC3" } },
+          {
+            "type": "stack",
+            "direction": "horizontal",
+            "style": { "gap": 8 },
+            "children": [
+              { "type": "button", "action": "previous", "text": "Previous" },
+              { "type": "button", "action": "playPause", "text": "Play or pause" },
+              { "type": "button", "action": "next", "text": "Next" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

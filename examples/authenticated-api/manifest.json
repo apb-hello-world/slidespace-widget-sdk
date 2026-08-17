@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 3,
+  "id": "community.sdk-samples.authenticated-api",
+  "name": "Authenticated status",
+  "description": "Use a protected API credential without exposing it to widget logic.",
+  "publisher": "SlideSpace SDK samples",
+  "version": "0.1.0",
+  "renderer": "declarative-v3",
+  "defaultWidth": 340,
+  "defaultHeight": 160,
+  "permissions": ["network.https"],
+  "visible": true,
+  "previewText": "API",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "runtime": { "kind": "declarative" },
+  "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
+  "settings": [
+    { "key": "apiToken", "label": "API token", "type": "secret", "required": true, "secret": true }
+  ],
+  "network": {
+    "declaredHosts": ["api.example.com"],
+    "allowUserProvidedOrigins": false,
+    "allowLocalOrigins": false
+  },
+  "dataSources": [
+    {
+      "id": "status",
+      "type": "http",
+      "request": {
+        "method": "GET",
+        "url": "https://api.example.com/v1/status",
+        "headers": { "Authorization": { "secretSetting": "apiToken" } },
+        "query": {}
+      },
+      "response": { "format": "json", "selector": "$" },
+      "refreshIntervalMilliseconds": 60000,
+      "manualRefresh": true
+    }
+  ],
+  "actions": [],
+  "layout": {
+    "type": "stack",
+    "direction": "vertical",
+    "style": { "padding": 18, "gap": 6 },
+    "children": [
+      { "type": "text", "text": "Service status", "style": { "fontSize": 13, "color": "#8EBBC3" } },
+      { "type": "text", "binding": "status.summary", "style": { "fontSize": 24, "weight": "bold" } }
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 3,
+  "id": "community.sdk-samples.typescript-dashboard",
+  "name": "TypeScript dashboard",
+  "description": "Combine approved data sources with sandboxed TypeScript WebAssembly logic.",
+  "publisher": "SlideSpace SDK samples",
+  "version": "0.1.0",
+  "renderer": "declarative-v3",
+  "defaultWidth": 460,
+  "defaultHeight": 300,
+  "permissions": ["network.https", "storage.local"],
+  "visible": true,
+  "previewText": "DASH",
+  "accentColor": "#00D9ED",
+  "backgroundColor": "#0D1518",
+  "transparentBackground": false,
+  "runtime": {
+    "kind": "wasm",
+    "apiVersion": "3.0",
+    "module": "logic.wasm",
+    "exports": {
+      "initialize": "initialize",
+      "handleEvent": "handle_event",
+      "migrateState": "migrate_state"
+    },
+    "maximumStateBytes": 524288
+  },
+  "compatibility": { "minimumSlideSpaceVersion": "2.1.0", "runtimeApi": "3.0" },
+  "source": {
+    "repository": "https://github.com/aterribleday/slidespace-widget-sdk",
+    "commit": "0000000000000000000000000000000000000000",
+    "license": "MIT",
+    "buildInstructions": "Build examples/typescript-dashboard/source with the documented TypeScript template and copy the component to logic.wasm."
+  },
+  "settings": [],
+  "network": {
+    "declaredHosts": ["status.example.com", "metrics.example.com"],
+    "allowUserProvidedOrigins": false,
+    "allowLocalOrigins": false
+  },
+  "dataSources": [
+    {
+      "id": "status",
+      "type": "http",
+      "request": { "method": "GET", "url": "https://status.example.com/api/status", "headers": {}, "query": {} },
+      "response": { "format": "json", "selector": "$" },
+      "refreshIntervalMilliseconds": 60000,
+      "manualRefresh": true
+    },
+    {
+      "id": "metrics",
+      "type": "http",
+      "request": { "method": "GET", "url": "https://metrics.example.com/api/summary", "headers": {}, "query": {} },
+      "response": { "format": "json", "selector": "$" },
+      "refreshIntervalMilliseconds": 60000,
+      "manualRefresh": true
+    }
+  ],
+  "actions": [],
+  "layout": {
+    "type": "stack",
+    "direction": "vertical",
+    "style": { "padding": 18, "gap": 10 },
+    "children": [
+      { "type": "text", "binding": "headline", "style": { "fontSize": 22, "weight": "bold" } },
+      { "type": "grid", "columns": 2, "style": { "gap": 10 }, "children": [
+        { "type": "text", "binding": "statusSummary" },
+        { "type": "text", "binding": "metricSummary" }
+      ] },
+      { "type": "chart", "binding": "history", "chartKind": "area", "style": { "color": "#00D9ED" } }
+    ]
+  }
+}

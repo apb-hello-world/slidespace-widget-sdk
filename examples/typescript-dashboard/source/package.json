@@ -1,0 +1,11 @@
+{
+  "name": "slidespace-typescript-dashboard-logic",
+  "private": true,
+  "scripts": {
+    "build": "asc src/index.ts --outFile ../logic.wasm --optimize --use abort=src/index/myAbort"
+  },
+  "devDependencies": {
+    "@extism/as-pdk": "1.0.0",
+    "assemblyscript": "0.28.8"
+  }
+}
