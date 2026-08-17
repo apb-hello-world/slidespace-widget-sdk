@@ -38,4 +38,12 @@ jobs:
       - run: npm run check
         env:
           REQUIRE_PREBUILT_WASM: "1"
-      - run: npm publish --provenance --access public
+      - name: Publish package
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [[ "$version" == *-* ]]; then
+            npm publish --provenance --access public --tag beta
+          else
+            npm publish --provenance --access public --tag latest
+          fi
